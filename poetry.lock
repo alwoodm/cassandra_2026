@@ -12,6 +12,86 @@ files = [
 ]
 
 [[package]]
+name = "async-cassandra"
+version = "0.0.1"
+description = "Async Python wrapper for the Cassandra Python driver"
+optional = false
+python-versions = ">=3.12"
+files = [
+    {file = "async_cassandra-0.0.1-py3-none-any.whl", hash = "sha256:117e646ef07357675ca1b0c3fd39a23c44bba296548a96b5b2aecd77e5f48ca8"},
+    {file = "async_cassandra-0.0.1.tar.gz", hash = "sha256:3a98a1dad4cd140b039b5276455bd0a7b6bb39654db25412d140c0060c7d009b"},
+]
+
+[package.dependencies]
+cassandra-driver = ">=3.29.2"
+
+[package.extras]
+dev = ["black (>=23.0.0)", "isort (>=5.12.0)", "mypy (>=1.0.0)", "pre-commit (>=3.0.0)", "pytest (>=7.0.0)", "pytest-asyncio (>=0.21.0)", "pytest-cov (>=4.0.0)", "pytest-mock (>=3.10.0)", "pytest-timeout (>=2.2.0)", "ruff (>=0.1.0)"]
+docs = ["sphinx (>=6.0.0)", "sphinx-autodoc-typehints (>=1.22.0)", "sphinx-rtd-theme (>=1.2.0)"]
+test = ["fastapi (>=0.100.0)", "httpx (>=0.24.0)", "psutil (>=5.9.0)", "pytest (>=7.0.0)", "pytest-asyncio (>=0.21.0)", "pytest-bdd (>=7.0.0)", "pytest-cov (>=4.0.0)", "pytest-mock (>=3.10.0)", "pytest-timeout (>=2.2.0)", "uvicorn (>=0.23.0)"]
+
+[[package]]
+name = "cassandra-driver"
+version = "3.29.3"
+description = "DataStax Driver for Apache Cassandra"
+optional = false
+python-versions = "*"
+files = [
+    {file = "cassandra_driver-3.29.3-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:96ad742f5cbfb771df512959ab5de36e248ce9aa2c487fd81c37d5c0a627c094"},
+    {file = "cassandra_driver-3.29.3-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:c935431682557ffcd3efc1c7bcb01b0f6769a1c90751a7154d5e3c905a6a2042"},
+    {file = "cassandra_driver-3.29.3-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:54afde4aaa5b55fbc2c075e1c55fb14a5739459428f3bb81f849ad020f7d5bcf"},
+    {file = "cassandra_driver-3.29.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:7552fb7189acd06161f8feac7045a387dc9e03b3b9f7dcb5675178906cee792e"},
+    {file = "cassandra_driver-3.29.3-cp310-cp310-win32.whl", hash = "sha256:891a1b6a111a591ad9f1c9e088846848dc9e6be030a6086c8c3aa5d2d837f266"},
+    {file = "cassandra_driver-3.29.3-cp310-cp310-win_amd64.whl", hash = "sha256:29fc241475801872dc27c3dd1a3976373536223dd4fd1c01868ff86bdbbfd48b"},
+    {file = "cassandra_driver-3.29.3-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:0785f6e0986089e922378ae3b64b5f696440aeb595fb84c2cf3ccef220c6ae91"},
+    {file = "cassandra_driver-3.29.3-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:1c241ba08473baf31a333feb59793190d01625541c2368d3bbb0f43a586f1d6a"},
+    {file = "cassandra_driver-3.29.3-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:064bf45d3ca87239e11168c0110676fc64f7fdbddb4bcba9be787b8ad5f6d734"},
+    {file = "cassandra_driver-3.29.3-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:5f9858b5ccdf75dd89c20d74474b59dd3a2e2f86c7251b310011c46acdef3874"},
+    {file = "cassandra_driver-3.29.3-cp311-cp311-win32.whl", hash = "sha256:84b24f69a7bbe76302330d47422a7fcc1998a6a96ffd414a795d7d95992b49cb"},
+    {file = "cassandra_driver-3.29.3-cp311-cp311-win_amd64.whl", hash = "sha256:26013d768b2ea4728c09144b08c0eb86ad692e85cb15f4e52e3107abca83683c"},
+    {file = "cassandra_driver-3.29.3-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:7a2f371af54cd1d153ef373a733889ebfbcc9c30e00429fc12a2569bad9239e1"},
+    {file = "cassandra_driver-3.29.3-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:3f654b01d8d49f68deedfaff1edcff314e3103d29130b2a034df6c490c522351"},
+    {file = "cassandra_driver-3.29.3-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:facd488c2b9be8bffcad5903566581e96d2863d2ec4bcad7f114d1b2b2f39ad0"},
+    {file = "cassandra_driver-3.29.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:572bd5a01089ab92da12f4f52b32b878547bbc544a798d8cfd042e7fc2601c75"},
+    {file = "cassandra_driver-3.29.3-cp312-cp312-win32.whl", hash = "sha256:63adca0f9219be3fe8789f4aa7b77c5f6a7bf65d6442959db52c653140ca4185"},
+    {file = "cassandra_driver-3.29.3-cp312-cp312-win_amd64.whl", hash = "sha256:9b7032b44769c454e96aa11483bfd167a87ea341268f1075b0ff84f780c910a9"},
+    {file = "cassandra_driver-3.29.3-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:5a0113020d86e8f61c7a2ae3d508720cd036df7462a55926b85dd97ada27e143"},
+    {file = "cassandra_driver-3.29.3-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:2b72312a8b62a905da6133effbba9b0731c8e30af96e10ca77fc5c34532c6827"},
+    {file = "cassandra_driver-3.29.3-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:38216e13d6f2e0d4513a5b8806e70ce4a8f28a82962793a67371582fc2c7141b"},
+    {file = "cassandra_driver-3.29.3-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:51d6a5390e2454b599500049f0a5c72aa701db155c1e542f9a1157c1c45814b1"},
+    {file = "cassandra_driver-3.29.3-cp313-cp313-win32.whl", hash = "sha256:638047c1f70fb14c9d8f743931d4f4f42aff6793b47afded3097c002ef8c1165"},
+    {file = "cassandra_driver-3.29.3-cp313-cp313-win_amd64.whl", hash = "sha256:27adf8869937461ad08c5fefb47857532e467b408db496db4dbf8b132a4bd623"},
+    {file = "cassandra_driver-3.29.3-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:281f67af1b8df88741eef551afbb49f78e4f366a7ab23e7060a1f0d6ba655752"},
+    {file = "cassandra_driver-3.29.3-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:158f7e5cb894a76a592aa0ca659a8e7c2a57ef603e04c07bbbc289a70e9ac893"},
+    {file = "cassandra_driver-3.29.3-cp39-cp39-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:fcf45725ae1751cb934b9b827a7d9cd899bbd09eb1ad28e2160b4584de35ba77"},
+    {file = "cassandra_driver-3.29.3-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:9abedc832e9a6636741299aae46c032d8c1248b507d8cebbaa2f48ec202904bc"},
+    {file = "cassandra_driver-3.29.3-cp39-cp39-win32.whl", hash = "sha256:2cb72808dfc46c40a6ee352ace181ce3170adde1cfd1447da91709a8cf482e20"},
+    {file = "cassandra_driver-3.29.3-cp39-cp39-win_amd64.whl", hash = "sha256:e1d09691d757f5b1900a98cc3b6cc7d8506683a2188c01eca86545f91edbbaf5"},
+    {file = "cassandra_driver-3.29.3.tar.gz", hash = "sha256:ff6b82ee4533f6fd4474d833e693b44b984f58337173ee98ed76bce08721a636"},
+]
+
+[package.dependencies]
+geomet = ">=1.1"
+
+[package.extras]
+cle = ["cryptography (>=42.0)"]
+graph = ["gremlinpython (==3.4.6)"]
+
+[[package]]
+name = "click"
+version = "8.3.1"
+description = "Composable command line interface toolkit"
+optional = false
+python-versions = ">=3.10"
+files = [
+    {file = "click-8.3.1-py3-none-any.whl", hash = "sha256:981153a64e25f12d547d3426c367a4857371575ee7ad18df2a6183ab0545b2a6"},
+    {file = "click-8.3.1.tar.gz", hash = "sha256:12ff4785d337a1bb490bb7e9c2b1ee5da3112e94a8622f26a6c77f5d2fc6842a"},
+]
+
+[package.dependencies]
+colorama = {version = "*", markers = "platform_system == \"Windows\""}
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -21,6 +101,20 @@ files = [
     {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"},
     {file = "colorama-0.4.6.tar.gz", hash = "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44"},
 ]
+
+[[package]]
+name = "geomet"
+version = "1.1.0"
+description = "Pure Python conversion library for common geospatial data formats"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "geomet-1.1.0-py3-none-any.whl", hash = "sha256:4372fe4e286a34acc6f2e9308284850bd8c4aa5bc12065e2abbd4995900db12f"},
+    {file = "geomet-1.1.0.tar.gz", hash = "sha256:51e92231a0ef6aaa63ac20c443377ba78a303fd2ecd179dc3567de79f3c11605"},
+]
+
+[package.dependencies]
+click = "*"
 
 [[package]]
 name = "loguru"
@@ -249,5 +343,5 @@ dev = ["black (>=19.3b0)", "pytest (>=4.6.2)"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.11"
-content-hash = "04d3be85cbbb98b066a5b55df34aa983b880f481ff51468653df47dc4f26dc9b"
+python-versions = ">=3.12,<3.15"
+content-hash = "d55a2b5ba6dc2f79ae3205f017e0b25564ba9a26a7caea3345b85e4c9d9a1557"
