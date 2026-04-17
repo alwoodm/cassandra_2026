@@ -3,6 +3,9 @@ import uuid
 from datetime import datetime, timedelta, UTC
 from cassandra.cluster import Cluster
 from cassandra.query import SimpleStatement
+from loguru import logger
+
+from cassandra_2026.systems.filez.model import StoredFile
 
 
 # Helper function to convert Cassandra's ResponseFuture to an asyncio Future
@@ -22,11 +25,43 @@ def execute_async_awaitable(session, query, parameters=None):
     return future
 
 
-async def main():
+
+class FileRepository:
+    def __init__(self, session):
+        self.session = session
+
+        # Prepare statements for better performance
+        self.insert_stmt = session.prepare(
+            "INSERT INTO files (file_id, author_id, filename, created_at, content) VALUES (?, ?, ?, ?, ?)"
+        )
+        self.get_by_id_stmt = session.prepare("SELECT * FROM files WHERE file_id = ?")
+        self.get_by_author_stmt = session.prepare("SELECT * FROM files WHERE author_id = ?")
+        # Note: range queries with SAI can be prepared too
+        self.get_by_time_range_stmt = session.prepare(
+            "SELECT * FROM files WHERE created_at >= ? AND created_at <= ?"
+        )
+
+    async def insert_file(self, file: StoredFile):
+        await execute_async_awaitable(
+            self.session,
+            self.insert_stmt,
+            (file.file_id, file.author_id, file.filename, file.created_at, file.content)
+        )
+
+    async def get_file_by_id(self, file_id: uuid.UUID) -> StoredFile | None:
+        logger.info(f'Getting file by id: {file_id}')
+        file = await execute_async_awaitable(self.session, self.get_by_id_stmt, (file_id,))
+        gg = file[0]
+        print(gg.filename)
+        print(type(gg))
+        return StoredFile(**(gg._asdict())) if file else None
+
+
+
+def get_cluster_session():
     # 1. Connect to Cassandra
     # 1.1 Connect to the 3-node Cassandra cluster on port 9044
     contact_points = ['10.10.1.231', '10.10.1.232', '10.10.1.233']
-
 
     # Initialize the cluster with the nodes and the custom port
     # cluster = Cluster(['127.0.0.1'])
@@ -37,8 +72,12 @@ async def main():
         # load_balancing_policy=DCAwareRoundRobinPolicy(local_dc='dc1')
     )
 
-    KS = 'filez' # hide in .env
+    KS = 'filez'  # hide in .env
     session = cluster.connect(f'{KS}')
+    return cluster, session
+
+async def main():
+    cluster, session = get_cluster_session()
 
     # Prepare statements for better performance
     insert_stmt = session.prepare(
@@ -89,6 +128,12 @@ async def main():
     )
     for row in result_range:
         print(f"Found in range: {row.filename} (ID: {row.file_id})")
+        file = StoredFile(file_id=row.file_id,
+                          author_id=row.author_id,
+                          filename=row.filename,
+                          content=row.content,
+                          created_at=row.created_at, )
+        print(file)
 
     cluster.shutdown()
 
