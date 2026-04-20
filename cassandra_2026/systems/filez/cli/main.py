@@ -1,8 +1,17 @@
+import asyncio
+import os
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import typer
+
+from cassandra_2026.systems.filez.cli.repository import (
+    FileRepository,
+    get_cluster_session,
+)
+from cassandra_2026.systems.filez.model import StoredFile
 
 app = typer.Typer(
     help="Upload and download files between local storage and Cassandra.",
@@ -22,7 +31,30 @@ def upload(
     ] = None,
 ) -> None:
     """Upload a file to Cassandra."""
-    typer.echo(f"upload: {path}, filename={filename}")
+    if not path.exists() or not path.is_file():
+        typer.echo(f"File not found: {path}", err=True)
+        raise typer.Exit(code=1)
+
+    author_id = UUID(
+        os.getenv("FILEZ_AUTHOR_ID", "11111111-1111-1111-1111-111111111111")
+    )
+    stored_file = StoredFile(
+        file_id=uuid4(),
+        author_id=author_id,
+        filename=filename or path.name,
+        created_at=datetime.now(UTC),
+        content=path.read_bytes(),
+    )
+
+    cluster, session = get_cluster_session()
+    try:
+        repo = FileRepository(session)
+        asyncio.run(repo.insert_file(stored_file))
+        typer.echo(f"Uploaded: {stored_file.filename}")
+        typer.echo(f"file_id:   {stored_file.file_id}")
+        typer.echo(f"author_id: {stored_file.author_id}")
+    finally:
+        cluster.shutdown()
 
 
 @app.command(no_args_is_help=True)
@@ -34,7 +66,19 @@ def download(
     ] = Path("."),
 ) -> None:
     """Download a file from Cassandra. Saves to current directory by default."""
-    typer.echo(f"download: {file_id} -> {destination}")
+    cluster, session = get_cluster_session()
+    try:
+        repo = FileRepository(session)
+        stored_file = asyncio.run(repo.get_file_by_id(file_id))
+        if stored_file is None:
+            typer.echo(f"File not found: {file_id}", err=True)
+            raise typer.Exit(code=1)
+        destination.mkdir(parents=True, exist_ok=True)
+        output_path = destination / stored_file.filename
+        output_path.write_bytes(stored_file.content)
+        typer.echo(f"Saved: {output_path}")
+    finally:
+        cluster.shutdown()
 
 
 @app.command(no_args_is_help=True)
@@ -42,17 +86,42 @@ def get(
     file_id: Annotated[UUID, typer.Argument(help="UUID of the file to inspect.")],
 ) -> None:
     """Print metadata of a stored file without downloading its content."""
-    typer.echo(f"get: {file_id}")
+    cluster, session = get_cluster_session()
+    try:
+        repo = FileRepository(session)
+        stored_file = asyncio.run(repo.get_file_by_id(file_id))
+        if stored_file is None:
+            typer.echo(f"File not found: {file_id}", err=True)
+            raise typer.Exit(code=1)
+        typer.echo(f"file_id:    {stored_file.file_id}")
+        typer.echo(f"author_id:  {stored_file.author_id}")
+        typer.echo(f"filename:   {stored_file.filename}")
+        typer.echo(f"created_at: {stored_file.created_at.isoformat()}")
+        typer.echo(f"size:       {len(stored_file.content)} bytes")
+    finally:
+        cluster.shutdown()
 
 
-@app.command("list-by-author", no_args_is_help=True)
-def list_by_author(
-    author_id: Annotated[
-        UUID, typer.Argument(help="UUID of the author whose files to list.")
-    ],
-) -> None:
-    """List all files stored for a given author."""
-    typer.echo(f"list-by-author: {author_id}")
+@app.command("list-by-author")
+def list_by_author() -> None:
+    """List all files stored for the author set in FILEZ_AUTHOR_ID."""
+    author_id = UUID(
+        os.getenv("FILEZ_AUTHOR_ID", "11111111-1111-1111-1111-111111111111")
+    )
+    cluster, session = get_cluster_session()
+    try:
+        repo = FileRepository(session)
+        files = asyncio.run(repo.get_files_by_author(author_id))
+        if not files:
+            typer.echo("No files found.")
+            return
+        for f in files:
+            typer.echo(f"- {f.filename}")
+            typer.echo(f"   file_id:    {f.file_id}")
+            typer.echo(f"   created_at: {f.created_at.isoformat()}")
+            typer.echo(f"   size:       {len(f.content)} bytes")
+    finally:
+        cluster.shutdown()
 
 
 if __name__ == "__main__":
