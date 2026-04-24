@@ -1,60 +1,17 @@
 import asyncio
 import uuid
+from asyncio import Future
 from datetime import datetime, timedelta, UTC
+from typing import Any
+
 from cassandra.cluster import Cluster
 from cassandra.query import SimpleStatement
 from loguru import logger
 
+from cassandra_2026.systems.filez.common import execute_async_awaitable
 from cassandra_2026.systems.filez.model import StoredFile
 
 
-# Helper function to convert Cassandra's ResponseFuture to an asyncio Future
-def execute_async_awaitable(session, query, parameters=None):
-    loop = asyncio.get_event_loop()
-    future = loop.create_future()
-
-    cassandra_future = session.execute_async(query, parameters)
-
-    def on_success(result):
-        loop.call_soon_threadsafe(future.set_result, result)
-
-    def on_error(exception):
-        loop.call_soon_threadsafe(future.set_exception, exception)
-
-    cassandra_future.add_callbacks(on_success, on_error)
-    return future
-
-
-
-class FileRepository:
-    def __init__(self, session):
-        self.session = session
-
-        # Prepare statements for better performance
-        self.insert_stmt = session.prepare(
-            "INSERT INTO files (file_id, author_id, filename, created_at, content) VALUES (?, ?, ?, ?, ?)"
-        )
-        self.get_by_id_stmt = session.prepare("SELECT * FROM files WHERE file_id = ?")
-        self.get_by_author_stmt = session.prepare("SELECT * FROM files WHERE author_id = ?")
-        # Note: range queries with SAI can be prepared too
-        self.get_by_time_range_stmt = session.prepare(
-            "SELECT * FROM files WHERE created_at >= ? AND created_at <= ?"
-        )
-
-    async def insert_file(self, file: StoredFile):
-        await execute_async_awaitable(
-            self.session,
-            self.insert_stmt,
-            (file.file_id, file.author_id, file.filename, file.created_at, file.content)
-        )
-
-    async def get_file_by_id(self, file_id: uuid.UUID) -> StoredFile | None:
-        logger.info(f'Getting file by id: {file_id}')
-        file = await execute_async_awaitable(self.session, self.get_by_id_stmt, (file_id,))
-        gg = file[0]
-        print(gg.filename)
-        print(type(gg))
-        return StoredFile(**(gg._asdict())) if file else None
 
 
 
