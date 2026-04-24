@@ -15,24 +15,6 @@ from cassandra_2026.systems.filez.model import StoredFile
 
 
 
-def get_cluster_session():
-    # 1. Connect to Cassandra
-    # 1.1 Connect to the 3-node Cassandra cluster on port 9044
-    contact_points = ['10.10.1.231', '10.10.1.232', '10.10.1.233']
-
-    # Initialize the cluster with the nodes and the custom port
-    # cluster = Cluster(['127.0.0.1'])
-    cluster = Cluster(
-        contact_points=contact_points,
-        port=9044,
-        # Optional but recommended: ensures your queries distribute properly
-        # load_balancing_policy=DCAwareRoundRobinPolicy(local_dc='dc1')
-    )
-
-    KS = 'filez'  # hide in .env
-    session = cluster.connect(f'{KS}')
-    return cluster, session
-
 async def main():
     cluster, session = get_cluster_session()
 
